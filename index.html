@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flash Cards</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap"
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        background: #f7f6fb;
+        min-height: 100vh;
+        color: #0d1b2a;
+        line-height: 1.6;
+      }
+      main {
+        width: min(640px, 100%);
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(1.8rem, 6vw, 2.6rem);
+        text-align: center;
+        color: #2536a5;
+      }
+      h2 {
+        margin: 0 0 12px;
+        color: #1b2555;
+        font-size: 1.15rem;
+      }
+      section {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 20px 60px rgba(31, 35, 80, 0.08);
+        padding: 20px;
+      }
+      button {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+        border: none;
+        border-radius: 14px;
+        padding: 14px 18px;
+        min-height: 48px;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(120deg, #6a5acd, #4c8bf5);
+        transition: transform 150ms ease, box-shadow 150ms ease;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      button:not(:disabled):hover {
+        transform: translateY(-1px);
+        box-shadow: 0 12px 20px rgba(76, 139, 245, 0.4);
+      }
+      .cards-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .card-item {
+        padding: 16px;
+        border-radius: 16px;
+        border: 2px solid #edf1ff;
+        background: #fff;
+        box-shadow: 0 12px 30px rgba(22, 32, 90, 0.08);
+        cursor: pointer;
+        transition: border-color 150ms ease, box-shadow 150ms ease,
+          transform 120ms ease;
+        text-align: left;
+        user-select: none;
+      }
+      .card-image,
+      .card-thumb {
+        width: 100%;
+        border-radius: 14px;
+        object-fit: cover;
+        display: block;
+        background: #e3e7ff;
+      }
+      .card-image {
+        margin: 16px 0 8px;
+        max-height: 260px;
+        aspect-ratio: 4 / 3;
+      }
+      .card-thumb {
+        margin-bottom: 12px;
+        max-height: 180px;
+        aspect-ratio: 4 / 3;
+      }
+      .card-item:focus-visible {
+        outline: 3px solid #4c8bf5;
+        outline-offset: 2px;
+      }
+      .card-item.active {
+        border-color: #4c8bf5;
+        box-shadow: 0 16px 32px rgba(76, 139, 245, 0.25);
+      }
+      .card-item:active {
+        transform: scale(0.99);
+      }
+      .pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        background: #edf1ff;
+        color: #3843a8;
+        font-weight: 600;
+      }
+      .review-card {
+        background: #fdfdff;
+        border-radius: 18px;
+        padding: 28px;
+        min-height: 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        gap: 18px;
+        border: 2px solid #ecf0ff;
+      }
+      .answer-box {
+        width: 100%;
+        min-height: 200px;
+        border-radius: 16px;
+        background: #eef2ff;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 12px;
+        user-select: none;
+      }
+      .answer-box.clickable {
+        cursor: pointer;
+        border: 2px solid #b8c2ff;
+      }
+      .answer-box p {
+        margin: 0;
+      }
+      .answer-media {
+        width: 100%;
+        border-radius: 14px;
+        object-fit: cover;
+        max-height: 260px;
+        aspect-ratio: 4 / 3;
+        background: #e3e7ff;
+      }
+      .answer-placeholder {
+        color: #6f7399;
+        font-style: italic;
+      }
+      .review-card button {
+        min-width: 140px;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 10px;
+        justify-content: center;
+      }
+      .secondary {
+        background: #f0f2ff;
+        color: #23326b;
+        box-shadow: none;
+      }
+      .secondary:hover {
+        box-shadow: 0 10px 15px rgba(84, 92, 150, 0.2);
+      }
+      .status {
+        margin: 0 0 12px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: #eef2ff;
+        color: #1f2555;
+        font-weight: 500;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .status button {
+        padding: 10px 18px;
+        min-height: 44px;
+      }
+      .status.error {
+        background: #ffecec;
+        color: #a32137;
+      }
+      @media (max-width: 600px) {
+        section {
+          padding: 18px;
+        }
+        .review-card {
+          padding: 24px;
+        }
+        button {
+          width: 100%;
+        }
+        .review-card button {
+          min-width: 0;
+        }
+        .status {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+
+      @media (min-width: 900px) {
+        main {
+          width: min(880px, 100%);
+        }
+        .cards-list {
+          flex-direction: row;
+          flex-wrap: wrap;
+        }
+        .card-item {
+          flex: 1 1 calc(50% - 12px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Flash Cards</h1>
+      <section>
+        <div id="app"></div>
+      </section>
+    </main>
+
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+    ></script>
+    <script type="text/babel">
+      const DATASET_PATH = "data/cards.json";
+      const FALLBACK_CARDS = [
+        {
+          id: crypto.randomUUID(),
+          question: "What is React?",
+          answer:
+            "A JavaScript library for building user interfaces using components.",
+          stats: { correct: 2, incorrect: 1 },
+        },
+        {
+          id: crypto.randomUUID(),
+          question: "What does JSX stand for?",
+          answer: "JavaScript XML - a syntax extension describing UI elements.",
+          stats: { correct: 1, incorrect: 0 },
+        },
+      ];
+
+      function normalizeCardEntry(entry) {
+        if (!entry) return null;
+        const question = (entry.question ?? "").trim();
+        const answer = (entry.answer ?? "").trim();
+        const image =
+          typeof entry.image === "string" ? entry.image.trim() : "";
+        const answerImage =
+          typeof entry.answerImage === "string" ? entry.answerImage.trim() : "";
+        if (!question || !answer) return null;
+        const stats = entry.stats ?? {};
+        return {
+          id: entry.id ?? crypto.randomUUID(),
+          question,
+          answer,
+          image: image || null,
+          answerImage: answerImage || null,
+          stats: {
+            correct: Number.isFinite(stats.correct) ? stats.correct : 0,
+            incorrect: Number.isFinite(stats.incorrect) ? stats.incorrect : 0,
+          },
+        };
+      }
+
+      function normalizeDataset(raw) {
+        if (!Array.isArray(raw)) return [];
+        return raw
+          .map(normalizeCardEntry)
+          .filter(Boolean);
+      }
+
+      function useLocalCards(key) {
+        const [cards, setCards] = React.useState(() => {
+          try {
+            const stored = window.localStorage.getItem(key);
+            return stored ? JSON.parse(stored) : [];
+          } catch {
+            return [];
+          }
+        });
+
+        React.useEffect(() => {
+          window.localStorage.setItem(key, JSON.stringify(cards));
+        }, [cards, key]);
+
+        return [cards, setCards];
+      }
+
+      function App() {
+        const [cards, setCards] = useLocalCards("flash-cards");
+        const [loadingDataset, setLoadingDataset] = React.useState(true);
+        const [datasetError, setDatasetError] = React.useState(null);
+        const [index, setIndex] = React.useState(0);
+        const [showAnswer, setShowAnswer] = React.useState(false);
+        const [importingDataset, setImportingDataset] = React.useState(false);
+
+        const currentCard = cards.length ? cards[index % cards.length] : null;
+        const activeCardId = currentCard?.id ?? null;
+
+        const applyCards = React.useCallback(
+          (nextCards) => {
+            const sanitized = nextCards.length ? nextCards : FALLBACK_CARDS;
+            setCards(sanitized);
+            setIndex(0);
+            setShowAnswer(false);
+          },
+          [setCards, setIndex, setShowAnswer]
+        );
+
+        const fetchDataset = React.useCallback(async () => {
+          const response = await fetch(DATASET_PATH, {
+            cache: "no-store",
+          });
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const raw = await response.json();
+          return normalizeDataset(raw);
+        }, []);
+
+        React.useEffect(() => {
+          let ignore = false;
+          async function loadDataset() {
+            try {
+              const seededCards = await fetchDataset();
+              if (ignore) return;
+              setCards((existing) => {
+                if (existing.length) return existing;
+                if (seededCards.length) return seededCards;
+                return FALLBACK_CARDS;
+              });
+            } catch (error) {
+              if (!ignore) {
+                setDatasetError(
+                  error instanceof Error ? error.message : String(error)
+                );
+                setCards((existing) => {
+                  if (existing.length) return existing;
+                  return FALLBACK_CARDS;
+                });
+              }
+            } finally {
+              if (!ignore) {
+                setLoadingDataset(false);
+              }
+            }
+          }
+          loadDataset();
+          return () => {
+            ignore = true;
+          };
+        }, [fetchDataset, setCards]);
+
+        const handleReloadDataset = React.useCallback(async () => {
+          setImportingDataset(true);
+          setDatasetError(null);
+          try {
+            const seededCards = await fetchDataset();
+            applyCards(seededCards);
+          } catch (error) {
+            setDatasetError(
+              error instanceof Error ? error.message : String(error)
+            );
+          } finally {
+            setImportingDataset(false);
+          }
+        }, [applyCards, fetchDataset]);
+
+        const handleNext = () => {
+          if (!cards.length) return;
+          setShowAnswer(false);
+          setIndex((prev) => (prev + 1) % cards.length);
+        };
+
+        const handlePrev = () => {
+          if (!cards.length) return;
+          setShowAnswer(false);
+          setIndex((prev) => (prev - 1 + cards.length) % cards.length);
+        };
+
+        const handleSelectCard = React.useCallback(
+          (cardId) => {
+            const targetIndex = cards.findIndex((card) => card.id === cardId);
+            if (targetIndex === -1) return;
+            setIndex(targetIndex);
+            setShowAnswer(false);
+            const review = document.getElementById("review-panel");
+            review?.scrollIntoView({ behavior: "smooth", block: "start" });
+          },
+          [cards, setIndex, setShowAnswer]
+        );
+
+        React.useEffect(() => {
+          if (!window.MathJax?.typesetPromise) return;
+          const container = document.getElementById("app");
+          if (!container) return;
+          window.MathJax.typesetPromise([container]).catch(() => {});
+        }, [cards, showAnswer, index]);
+
+        return (
+          <>
+            <DatasetStatus
+              loading={loadingDataset}
+              error={datasetError}
+              datasetPath={DATASET_PATH}
+              hasCards={cards.length > 0}
+              onReload={handleReloadDataset}
+              importing={importingDataset}
+            />
+            <ReviewPanel
+              card={currentCard}
+              total={cards.length}
+              index={index}
+              showAnswer={showAnswer}
+              onReveal={() => setShowAnswer(true)}
+              onNext={handleNext}
+              onPrev={handlePrev}
+            />
+            <CardList
+              cards={cards}
+              activeId={activeCardId}
+              onSelect={handleSelectCard}
+            />
+          </>
+        );
+      }
+
+      function DatasetStatus({
+        loading,
+        error,
+        datasetPath,
+        hasCards,
+        onReload,
+        importing,
+      }) {
+        if (loading) {
+          return <p className="status">Loading dataset…</p>;
+        }
+        if (error) {
+          return (
+            <div className="status error">
+              <span>
+                Could not load {datasetPath}: {error}
+              </span>
+              <button onClick={onReload} disabled={importing}>
+                Retry load
+              </button>
+            </div>
+          );
+        }
+        if (!hasCards) {
+          return (
+            <div className="status">
+              <span>
+                No cards yet. Add entries to {datasetPath} and reload to import them.
+              </span>
+              <button onClick={onReload} disabled={importing}>
+                Load dataset
+              </button>
+            </div>
+          );
+        }
+        return (
+          <div className="status">
+            <span>
+              Cards currently stored in your browser. Reload to import{" "}
+              {datasetPath} (overwrites current cards).
+            </span>
+            <button onClick={onReload} disabled={importing}>
+              {importing ? "Reloading…" : "Reload dataset"}
+            </button>
+          </div>
+        );
+      }
+
+      function ReviewPanel({
+        card,
+        total,
+        index,
+        showAnswer,
+        onReveal,
+        onNext,
+        onPrev,
+      }) {
+        if (!card) {
+          return (
+            <div className="review-card">
+              <strong>Create a card to get started.</strong>
+            </div>
+          );
+        }
+
+        return (
+          <div id="review-panel">
+            <h2>Review mode</h2>
+            <div className="review-card">
+              <div className="pill">
+                Card {index + 1} / {total}
+              </div>
+              <p style={{ fontSize: "1.2rem", margin: 0 }}>{card.question}</p>
+              {card.image && (
+                <img
+                  src={card.image}
+                  alt={`Illustration for ${card.question}`}
+                  className="card-image"
+                  loading="lazy"
+                />
+              )}
+              <div
+                className={`answer-box${showAnswer ? "" : " clickable"}`}
+                role="button"
+                tabIndex={0}
+                onClick={() => {
+                  if (showAnswer) {
+                    onNext();
+                  } else {
+                    onReveal();
+                  }
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    if (showAnswer) {
+                      onNext();
+                    } else {
+                      onReveal();
+                    }
+                  }
+                }}
+                aria-label={
+                  showAnswer
+                    ? "Answer shown. Tap again for next card."
+                    : "Tap or press enter to reveal the answer"
+                }
+              >
+                {showAnswer ? (
+                  <>
+                    <p style={{ color: "#0f6c4c", fontWeight: 600 }}>
+                      {card.answer}
+                    </p>
+                    {card.answerImage && (
+                      <img
+                        src={card.answerImage}
+                        alt={`Answer illustration for ${card.question}`}
+                        className="answer-media"
+                        loading="lazy"
+                      />
+                    )}
+                  </>
+                ) : (
+                  <p className="answer-placeholder">Tap to reveal the response.</p>
+                )}
+              </div>
+              <div className="actions">
+                <button className="secondary" onClick={onPrev}>
+                  Back
+                </button>
+                <button onClick={onNext}>Next card</button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function CardList({ cards, activeId, onSelect }) {
+        if (!cards.length) return null;
+        return (
+          <div>
+            <h2>All cards</h2>
+            <div className="cards-list">
+              {cards.map((card) => (
+                <article
+                  key={card.id}
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={card.id === activeId ? "true" : undefined}
+                  className={`card-item${
+                    card.id === activeId ? " active" : ""
+                  }`}
+                  onClick={() => onSelect(card.id)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      onSelect(card.id);
+                    }
+                  }}
+                >
+                  <p style={{ margin: "0 0 8px", fontWeight: 600 }}>
+                    {card.question}
+                  </p>
+                  {card.image && (
+                    <img
+                      src={card.image}
+                      alt=""
+                      className="card-thumb"
+                      loading="lazy"
+                    />
+                  )}
+                  <p style={{ margin: "0 0 12px", color: "#18545a" }}>
+                    {card.answer}
+                  </p>
+                  {card.answerImage && (
+                    <img
+                      src={card.answerImage}
+                      alt=""
+                      className="card-thumb"
+                      loading="lazy"
+                    />
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("app"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+[
+  {
+    "question": "What role does uncertainty play in Markov models?",
+    "answer": "Uncertainty allows Markov models to capture the randomness and unpredictability in real-world systems. It represents the probabilistic nature of transitions between states and the noisy observations, enabling the model to handle incomplete or uncertain information."
+  },
+  {
+    "question": "What role does time play in Markov models?",
+    "answer": "Time allows Markov models to represent how systems evolve over discrete steps \\( t_1, t_2, \\ldots, t_n \\). The state at time \\( t_i \\), denoted \\( X_{t_i} \\), depends only on the state at the previous time \\( t_{i-1} \\), reflecting the Markov property. This lets the model capture sequential changes step-by-step."
+  },
+  {
+  "question": "What are evidence variables \\( e_1 \\) to \\( e_t \\) in Markov models?",
+  "answer": "Evidence variables \\( e_1, e_2, \\ldots, e_t \\) represent the observed data or measurements collected at each time step from \\( t=1 \\) to \\( t \\). They provide indirect information about the hidden states \\( X_t \\), allowing the model to update beliefs about the system over time."
+  },
+  {
+    "question": "What is filtering in Hidden Markov Models?",
+    "answer": "Filtering computes \\( P(X_t \\mid e_1, e_2, \\ldots, e_t) \\), which is the probability of the system being in hidden state \\( X_t \\) right now, given all evidence variables observed up to time \\( t \\). It helps us track or estimate the current state based on everything observed so far."
+  },
+  {
+    "question": "What is prediction in Hidden Markov Models?",
+    "answer": "Prediction computes \\( P(X_{t+k} \\mid e_1, e_2, \\ldots, e_t) \\) for some future step \\( k > 0 \\). This means estimating the probability of future hidden states based on all evidence variables observed so far, helping us guess what might happen next."
+  },
+  {
+    "question": "What is smoothing in Hidden Markov Models?",
+    "answer": "Smoothing computes \\( P(X_k \\mid e_1, e_2, \\ldots, e_t) \\) for some past time \\( k < t \\). It uses all evidence variables observed up to the current time \\( t \\) to improve our estimate of what the hidden state was at time \\( k \\). This gives a clearer understanding of the past."
+  },
+  {
+    "question": "What is the most likely explanation in Hidden Markov Models?",
+    "answer": "The most likely explanation finds the entire sequence of states \\( x_1, x_2, \\ldots, x_t \\) that maximizes the probability \\( P(x_1, x_2, \\ldots, x_t \\mid e_1, e_2, \\ldots, e_t) \\). This sequence best explains the observed evidence variables and is often found using the Viterbi algorithm, useful in tasks like speech recognition."
+  },
+  {
+    "question": "What is filtering (monitoring) in Hidden Markov Models?",
+    "answer": "Filtering, also called monitoring or state estimation, is the process of continuously updating and keeping track of the probability distribution \\( f_{1:t} = P(X_t \\mid e_1, e_2, \\ldots, e_t) \\) of the current hidden state \\( X_t \\) as new evidence variables \\( e_t \\) arrive. Starting from an initial distribution \\( f_0 \\) (often uniform), filtering uses each new piece of evidence to revise what we believe about the system’s state. This helps us maintain an accurate estimate of where the system is at every time step."
+  },
+  {
+  "question": "What do the notations \\( f_0 \\), \\( f_t \\) for \\( t \\geq 1 \\), and \\( f_{1:t} \\) mean in filtering?",
+  "answer": "\\( f_0 \\) is the initial belief before any evidence. \\( f_t \\) for \\( t \\geq 1 \\) are updated beliefs after seeing evidence up to time \\( t \\). \\( f_{1:t} \\) means the sequence of filtered beliefs from time 1 through \\( t \\)."
+  },
+  {
+    "question": "What does each term mean in the filtering update equation \n\n\\( P(X_{t+1} | e_{1:t+1}) = \\alpha \\; P(e_{t+1} | X_{t+1}) \\sum_{x_t} P(x_t | e_{1:t}) P(X_{t+1} | x_t) \\)?",
+    "answer": "\\( P(X_{t+1} | e_{1:t+1}) \\) is the updated belief about the state at time \\( t+1 \\) after seeing all evidence up to \\( t+1 \\). \\( \\alpha \\) is the normalization constant ensuring probabilities sum to 1. \\( P(e_{t+1} | X_{t+1}) \\) is the likelihood of observing new evidence \\( e_{t+1} \\) if the system is in state \\( X_{t+1} \\). \\( \\sum_{x_t} \\) denotes the sum over all possible states at previous time \\( t \\). \\( P(x_t | e_{1:t}) \\) is the previous belief about the system being in state \\( x_t \\) given evidence so far. \\( P(X_{t+1} | x_t) \\) is the transition probability from state \\( x_t \\) at time \\( t \\) to \\( X_{t+1} \\) at time \\( t+1 \\)."
+  },
+  {
+    "question": "What is the prediction step in the filtering equation? \n\n\\( P(X_{t+1} | e_{1:t+1}) = \\alpha \\; P(e_{t+1} | X_{t+1}) \\sum_{x_t} P(x_t | e_{1:t}) P(X_{t+1} | x_t) \\)",
+    "answer": "The prediction step uses \\( \\sum_{x_t} P(x_t | e_{1:t}) P(X_{t+1} | x_t) \\) to estimate the probability of each possible next state \\( X_{t+1} \\). It combines the current belief about the state at time \\( t \\) with the transition model to predict where the system might be at time \\( t+1 \\). This gives the prior belief before seeing new evidence."
+  },
+  {
+    "question": "What is the update step in the filtering equation? \n\n\\( P(X_{t+1} | e_{1:t+1}) = \\alpha \\; P(e_{t+1} | X_{t+1}) \\sum_{x_t} P(x_t | e_{1:t}) P(X_{t+1} | x_t) \\)",
+    "answer": "The update step multiplies the prior belief by \\( P(e_{t+1} | X_{t+1}) \\), which is the likelihood of observing the new evidence given each possible state. This step adjusts the predicted belief to favor states that make the new evidence more likely."
+  },
+  {
+    "question": "What is the normalization step in the filtering equation? \n\n\\( P(X_{t+1} | e_{1:t+1}) = \\alpha \\; P(e_{t+1} | X_{t+1}) \\sum_{x_t} P(x_t | e_{1:t}) P(X_{t+1} | x_t) \\)",
+    "answer": "The normalization step uses \\( \\alpha \\) to ensure that all probabilities sum to 1. After predicting and updating, the unnormalized values might not form a valid probability distribution, so \\( \\alpha \\) rescales them into a proper belief distribution."
+  },
+  {
+    "question": "What does the full filtering update equation represent?",
+    "answer": "The full equation \\( P(X_{t+1} | e_1, e_2, \\ldots, e_{t+1}) = \\alpha \\; P(e_{t+1} | X_{t+1}) \\sum_{x_t} P(x_t | e_1, e_2, \\ldots, e_t) P(X_{t+1} | x_t) \\) combines prediction and update. It represents how an agent continuously updates its belief about the current hidden state as new evidence is observed over time."
+  },
+  {
+    "question": "What are the main steps in the filtering process for Hidden Markov Models? \n\n\\( P(X_{t+1} | e_{1:t+1}) = \\alpha \\; P(e_{t+1} | X_{t+1}) \\sum_{x_t} P(x_t | e_{1:t}) P(X_{t+1} | x_t) \\)",
+    "answer": "1. Gather current evidence — The agent starts with everything it knows so far: all past evidence \\( e_1, e_2, \\ldots, e_t \\) and its current belief \\( P(X_t \\mid e_1, \\ldots, e_t) \\). 2. Predict the next step — Using the transition model \\( P(X_{t+1} \\mid X_t) \\), the agent estimates what the next state might be before seeing new evidence. 3. Observe new evidence — When the next piece of evidence \\( e_{t+1} \\) arrives, the agent checks how likely that evidence is under each possible state using \\( P(e_{t+1} \\mid X_{t+1}) \\). 4. Update beliefs — The agent updates its belief to favor states that better explain the new evidence and normalizes the probabilities with \\( \\alpha \\)."
+  },
+  {
+    "question": "What is the filtering algorithm in Hidden Markov Models and what are its computational costs?",
+    "answer": "The filtering algorithm updates beliefs using \\( P(X_{t+1} | e_{1:t+1}) = \\alpha \\; P(e_{t+1} | X_{t+1}) \\sum_{x_t} P(x_t | e_{1:t}) P(X_{t+1} | x_t) \\), written as \\( f_{1:t+1} = \\text{FORWARD}(f_{1:t}, e_{t+1}) \\). The cost per time step is \\( O(|X|^2) \\), where \\( |X| \\) is the number of states. Time and space costs are constant with respect to \\( t \\), but \\( O(|X|^2) \\) becomes infeasible for models with many states, leading to the need for approximate filtering algorithms."
+  },
+  {
+  "question": "What are common uses for filtering algorithms in Markov models?",
+  "answer": "Filtering algorithms are used to estimate the current hidden state based on all past evidence. Common applications include tracking (like robot localization), speech recognition, financial modeling, and any real-time system that needs to update its understanding as new noisy data arrives."
+  }
+]
